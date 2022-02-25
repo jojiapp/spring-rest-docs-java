@@ -23,6 +23,9 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
     asciidoctorExtensions // 추가
 }
 
@@ -39,6 +42,7 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    annotationProcessor 'org.projectlombok:lombok'
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor' // 추가
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // 추가
@@ -85,28 +89,21 @@ build {
 }
 ```
 
-### Plugin
-
-```groovy
-plugins {
-    id 'org.springframework.boot' version '2.6.3'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.asciidoctor.jvm.convert' version '3.3.2' // 추가
-    id 'java'
-}
-```
-
 - `Gradle7.x` 버전 부터 `org.asciidoctor.convert` 플러그인은 사용할 수 없는 관계로 `org.asciidoctor.jvm.convert` 라이브러리를 사용합니다.
 
 ### Configurations
 
 ```groovy
 configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
     asciidoctorExtensions
 }
 ```
 
-- 추후 `operation`과 `{snippets}`을 사용하기 위한 설정 과정입니다.
+- `extendsFrom annotationProcessor ~`: `lombok` 같은 라이브러리를 사용하기 위함 입니다.
+- `asciidoctorExtensions`: 추후 `operation`과 `{snippets}`을 사용하기 위한 설정 과정입니다.
 
 ### Ext
 
@@ -132,12 +129,14 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    annotationProcessor 'org.projectlombok:lombok'
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor' // 추가
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // 추가
 }
 ```
 
+- `annotationProcessor`: `lombok`을 사용하기 위해 추가합니다.
 - `asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'`
     - `configurations` 설정과 한 묶음으로, 해당 라이브러리를 추가해야 `operation`과 `{snippets}`을 사용할 수 있습니다.
 - `testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'`
@@ -244,5 +243,6 @@ clean {
 
 ## 참고 사이트
 
+- [Spring Rest Docs 공식 사이트](https://docs.spring.io/spring-restdocs/docs/current/reference/html5/)
 - [[Spring] Spring rest docs 적용기(gradle 7.0.2)](https://velog.io/@max9106/Spring-Spring-rest-docs%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%AC%B8%EC%84%9C%ED%99%94)
 - [Configure a Gradle 7 compatible version of Asciidoctor's Gradle plugin in projects using REST Docs #676](https://github.com/spring-io/start.spring.io/issues/676)
