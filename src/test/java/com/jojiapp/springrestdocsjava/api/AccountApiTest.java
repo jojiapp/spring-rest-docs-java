@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class AccountApiTest {
 
-    public static final String DEFAULT = "default";
+    public static final String DEFAULT = "defaults";
     @Autowired
     private MockMvc mockMvc;
 
