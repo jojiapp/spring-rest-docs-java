@@ -3,6 +3,7 @@ package com.jojiapp.springrestdocsjava.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jojiapp.springrestdocsjava.account.api.AccountApi;
 import com.jojiapp.springrestdocsjava.account.dto.request.AccountRegister;
+import com.jojiapp.springrestdocsjava.account.dto.request.AccountUpdate;
 import com.jojiapp.springrestdocsjava.account.dto.response.AccountResponse;
 import com.jojiapp.springrestdocsjava.account.service.AccountService;
 import com.jojiapp.springrestdocsjava.common.respones.ApiResponse;
@@ -28,14 +29,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,7 +44,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class AccountApiTest {
 
-    public static final String DEFAULT = "defaults";
     @Autowired
     private MockMvc mockMvc;
 
@@ -56,8 +53,16 @@ class AccountApiTest {
     @MockBean
     private AccountService accountService;
 
+    private Attributes.Attribute defaultAttr(int value) {
+        return new Attributes.Attribute("defaults", value);
+    }
+
+    private Attributes.Attribute typeAttr(JsonFieldType type) {
+        return new Attributes.Attribute("types", type);
+    }
+
     @Test
-    void 계정을_성공적으로_생성한다() throws Exception {
+    void 계정을_성공적으로_생성하면_201상태를_받는다() throws Exception {
         // given
         var api = "/api/accounts";
         var apiRequest = new AccountRegister("jojiapp", 26);
@@ -77,11 +82,14 @@ class AccountApiTest {
                 .andDo(document("account/register",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("요청 Body 타입"),
-                                headerWithName(HttpHeaders.ACCEPT).description("응답 Body 타입")
+                                headerWithName(HttpHeaders.ACCEPT).description("기대 응답 Body 타입")
                         ),
                         requestFields(
                                 fieldWithPath("name").description("이름").type(JsonFieldType.STRING),
                                 fieldWithPath("age").description("나이").type(JsonFieldType.NUMBER)
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 Body 타입")
                         ),
                         responseFields(
                                 fieldWithPath("body.success").description("성공 여부").type(JsonFieldType.BOOLEAN)
@@ -90,7 +98,7 @@ class AccountApiTest {
     }
 
     @Test
-    void 계정_전체_조회한다() throws Exception {
+    void 계정을_정상적으로_전체조회하면_200상태를_받는다() throws Exception {
         // given
         var api = "/api/accounts";
 
@@ -125,14 +133,47 @@ class AccountApiTest {
                                 headerWithName(HttpHeaders.ACCEPT).description("응답 Body 타입")
                         ),
                         requestParameters(
-                                parameterWithName("page").description("페이지 번호 (0부터 시작)").optional(),
-                                parameterWithName("size").description("개수").attributes(new Attributes.Attribute(DEFAULT, 20)).optional(),
-                                parameterWithName("sort").description("정렬 {fieldName,asc|desc}").optional()
+                                parameterWithName("page").description("페이지 번호 (0부터 시작)").attributes(typeAttr(JsonFieldType.NUMBER)).optional(),
+                                parameterWithName("size").description("개수").attributes(typeAttr(JsonFieldType.NUMBER)).attributes(defaultAttr(20)).optional(),
+                                parameterWithName("sort").description("정렬 {fieldName,asc|desc}").attributes(typeAttr(JsonFieldType.STRING)).optional()
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 Body 타입")
                         ),
                         responseFields(
                                 fieldWithPath("body[0].id").description("계정 고유 아이디").type(JsonFieldType.NUMBER),
                                 fieldWithPath("body[0].name").description("이름").type(JsonFieldType.STRING),
                                 fieldWithPath("body[0].age").description("나이").type(JsonFieldType.NUMBER)
+                        )
+                ));
+    }
+
+
+    @Test
+    void 계정을_성공적으로_수정하면_204상태를_받는다() throws Exception {
+        // given
+        var api = "/api/accounts/{id}";
+        var apiRequest = new AccountUpdate("joji", 25);
+
+        // when
+        var result = mockMvc.perform(put(api, 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(apiRequest))
+        );
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isNoContent())
+                .andDo(document("account/update-all",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("요청 Body 타입")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("계정 고유 아이디").attributes(typeAttr(JsonFieldType.NUMBER))
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("이름").type(JsonFieldType.STRING),
+                                fieldWithPath("age").description("나이").type(JsonFieldType.NUMBER)
                         )
                 ));
     }

@@ -1,6 +1,7 @@
 package com.jojiapp.springrestdocsjava.account.api;
 
 import com.jojiapp.springrestdocsjava.account.dto.request.AccountRegister;
+import com.jojiapp.springrestdocsjava.account.dto.request.AccountUpdate;
 import com.jojiapp.springrestdocsjava.account.dto.response.AccountResponse;
 import com.jojiapp.springrestdocsjava.account.service.AccountService;
 import com.jojiapp.springrestdocsjava.common.respones.ApiResponse;
@@ -30,4 +31,13 @@ public class AccountApi {
     public ApiResponse<List<AccountResponse>> findAll(Pageable pageable) {
         return ApiResponse.of(accountService.findAll(pageable));
     }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateAll(
+            @PathVariable Long id,
+            @RequestBody AccountUpdate request) {
+        accountService.update(id, request);
+    }
+
 }
