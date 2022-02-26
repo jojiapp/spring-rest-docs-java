@@ -1,1 +1,9 @@
+== Account [계정]
+
+=== 등록
+
 operation::account/register[]
+
+=== 전체 조회
+
+operation::account/find-all[]

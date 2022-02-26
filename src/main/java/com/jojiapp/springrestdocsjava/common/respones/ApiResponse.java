@@ -1,9 +1,6 @@
 package com.jojiapp.springrestdocsjava.common.respones;
 
 import lombok.Getter;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class ApiResponse<T> {
@@ -16,7 +13,5 @@ public class ApiResponse<T> {
         return new ApiResponse<>(body);
     }
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime createDate = LocalDateTime.now();
     private T body;
 }

@@ -1,12 +1,16 @@
 package com.jojiapp.springrestdocsjava.account.api;
 
 import com.jojiapp.springrestdocsjava.account.dto.request.AccountRegister;
+import com.jojiapp.springrestdocsjava.account.dto.response.AccountResponse;
 import com.jojiapp.springrestdocsjava.account.service.AccountService;
 import com.jojiapp.springrestdocsjava.common.respones.ApiResponse;
 import com.jojiapp.springrestdocsjava.common.respones.SuccessResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -20,5 +24,10 @@ public class AccountApi {
     public ApiResponse<SuccessResponse> save(@RequestBody AccountRegister request) {
         accountService.register(request);
         return ApiResponse.of(SuccessResponse.create());
+    }
+
+    @GetMapping
+    public ApiResponse<List<AccountResponse>> findAll(Pageable pageable) {
+        return ApiResponse.of(accountService.findAll(pageable));
     }
 }

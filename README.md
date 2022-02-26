@@ -42,6 +42,7 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     annotationProcessor 'org.projectlombok:lombok'
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor' // 추가
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -73,14 +74,14 @@ asciidoctor {
 
 bootJar {
     dependsOn asciidoctor
-    from('${asciidoctor.outputDir}') {
+    from("${asciidoctor.outputDir}") {
         into bootJarDocumentPath
     }
 }
 
 task copyDocument(type: Copy) {
     dependsOn asciidoctor
-    from file('${asciidoctor.outputDir}')
+    from file("${asciidoctor.outputDir}")
     into documentDir
 }
 
@@ -129,6 +130,7 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     annotationProcessor 'org.projectlombok:lombok'
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor' // 추가
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -193,7 +195,7 @@ asciidoctor {
 ```groovy
 bootJar {
     dependsOn asciidoctor
-    from('${asciidoctor.outputDir}') {
+    from("${asciidoctor.outputDir}") {
         into bootJarDocumentPath
     }
 }
@@ -211,7 +213,7 @@ bootJar {
 ```groovy
 task copyDocument(type: Copy) {
     dependsOn asciidoctor
-    from file('${asciidoctor.outputDir}')
+    from file("${asciidoctor.outputDir}")
     into documentDir
 }
 ```
@@ -240,6 +242,8 @@ clean {
 - `clean`을 실행하면 `src/main/resources/static/docs` 폴더를 삭제 함으로써, `build`시 깔끔히 새로운 문서를 볼 수 있습니다.
 
 ---
+
+## Test 코드 작성
 
 ## 참고 사이트
 

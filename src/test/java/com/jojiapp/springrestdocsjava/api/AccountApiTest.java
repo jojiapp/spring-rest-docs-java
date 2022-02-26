@@ -3,6 +3,7 @@ package com.jojiapp.springrestdocsjava.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jojiapp.springrestdocsjava.account.api.AccountApi;
 import com.jojiapp.springrestdocsjava.account.dto.request.AccountRegister;
+import com.jojiapp.springrestdocsjava.account.dto.response.AccountResponse;
 import com.jojiapp.springrestdocsjava.account.service.AccountService;
 import com.jojiapp.springrestdocsjava.common.respones.ApiResponse;
 import com.jojiapp.springrestdocsjava.common.respones.SuccessResponse;
@@ -15,16 +16,28 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
 
+import java.util.List;
+
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccountApi.class)
@@ -33,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class AccountApiTest {
 
+    public static final String DEFAULT = "default";
     @Autowired
     private MockMvc mockMvc;
 
@@ -43,37 +57,85 @@ class AccountApiTest {
     private AccountService accountService;
 
     @Test
-    public void 계정_생성() throws Exception {
+    void 계정을_성공적으로_생성한다() throws Exception {
         // given
-        String api = "/api/accounts";
-        AccountRegister apiRequest = AccountRegister.builder()
-                .name("jojiapp")
-                .age(26)
-                .build();
-
-        ApiResponse<SuccessResponse> apiResponse = ApiResponse.of(SuccessResponse.create());
+        var api = "/api/accounts";
+        var apiRequest = new AccountRegister("jojiapp", 26);
+        var apiResponse = ApiResponse.of(SuccessResponse.create());
 
         // when
-        mockMvc.perform(post(api)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(apiRequest))
-                )
-                .andDo(print())
+        var result = mockMvc.perform(post(api)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(apiRequest))
+        );
+
+        // then
+        result.andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(apiResponse)))
                 .andDo(document("account/register",
                         requestHeaders(
-                                headerWithName("content-Type").description(MediaType.APPLICATION_JSON),
-                                headerWithName("accept").description(MediaType.APPLICATION_JSON)
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("요청 Body 타입"),
+                                headerWithName(HttpHeaders.ACCEPT).description("응답 Body 타입")
                         ),
                         requestFields(
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                fieldWithPath("age").type(JsonFieldType.NUMBER).description("나이")
+                                fieldWithPath("name").description("이름").type(JsonFieldType.STRING),
+                                fieldWithPath("age").description("나이").type(JsonFieldType.NUMBER)
                         ),
                         responseFields(
-                                fieldWithPath("createDate").type(JsonFieldType.STRING).description("응답 시간"),
-                                fieldWithPath("body.success").type(JsonFieldType.BOOLEAN).description("성공 여부")
+                                fieldWithPath("body.success").description("성공 여부").type(JsonFieldType.BOOLEAN)
                         ))
                 );
     }
+
+    @Test
+    void 계정_전체_조회한다() throws Exception {
+        // given
+        var api = "/api/accounts";
+
+        int page = 1;
+        int size = 5;
+
+        var params = new LinkedMultiValueMap<String, String>();
+        params.add("page", Integer.toString(page));
+        params.add("size", Integer.toString(size));
+        params.add("sort", "id,asc");
+
+        var accountResponses = List.of(new AccountResponse(1L, "jojiapp", 26));
+        var apiResponse = ApiResponse.of(accountResponses);
+
+        var pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        given(accountService.findAll(pageable)).willReturn(accountResponses);
+
+        // when
+        var result = mockMvc.perform(get(api)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .params(params)
+        );
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(apiResponse)))
+                .andDo(document("account/find-all",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("요청 Body 타입"),
+                                headerWithName(HttpHeaders.ACCEPT).description("응답 Body 타입")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("페이지 번호 (0부터 시작)").optional(),
+                                parameterWithName("size").description("개수").attributes(new Attributes.Attribute(DEFAULT, 20)).optional(),
+                                parameterWithName("sort").description("정렬 {fieldName,asc|desc}").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("body[0].id").description("계정 고유 아이디").type(JsonFieldType.NUMBER),
+                                fieldWithPath("body[0].name").description("이름").type(JsonFieldType.STRING),
+                                fieldWithPath("body[0].age").description("나이").type(JsonFieldType.NUMBER)
+                        )
+                ));
+    }
+
+
 }
