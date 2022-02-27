@@ -19,7 +19,11 @@ public class AccountService {
         return List.of();
     }
 
-    public void update(Long id, AccountUpdate request) {
+    public void updateAllById(Long id, AccountUpdate request) {
         // 계정 수정 로직
+    }
+
+    public void removeById(Long id) {
+        // 계정 삭제 로직
     }
 }

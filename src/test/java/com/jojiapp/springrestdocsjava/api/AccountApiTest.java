@@ -79,7 +79,7 @@ class AccountApiTest {
         result.andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().json(objectMapper.writeValueAsString(apiResponse)))
-                .andDo(document("account/register",
+                .andDo(document("accounts/register",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("요청 Body 타입"),
                                 headerWithName(HttpHeaders.ACCEPT).description("기대 응답 Body 타입")
@@ -127,7 +127,7 @@ class AccountApiTest {
         result.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(apiResponse)))
-                .andDo(document("account/find-all",
+                .andDo(document("accounts/find-all",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("요청 Body 타입"),
                                 headerWithName(HttpHeaders.ACCEPT).description("응답 Body 타입")
@@ -164,7 +164,7 @@ class AccountApiTest {
         // then
         result.andDo(print())
                 .andExpect(status().isNoContent())
-                .andDo(document("account/update-all",
+                .andDo(document("accounts/update-all",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("요청 Body 타입")
                         ),
@@ -174,6 +174,24 @@ class AccountApiTest {
                         requestFields(
                                 fieldWithPath("name").description("이름").type(JsonFieldType.STRING),
                                 fieldWithPath("age").description("나이").type(JsonFieldType.NUMBER)
+                        )
+                ));
+    }
+
+    @Test
+    void 계정을_성공적으로_삭제하면_204상태를_받는다() throws Exception {
+        // given
+        var api = "/api/accounts/{id}";
+
+        // when
+        var result = mockMvc.perform(delete(api, 1));
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isNoContent())
+                .andDo(document("accounts/remove",
+                        pathParameters(
+                                parameterWithName("id").description("계정 고유 아이디").attributes(typeAttr(JsonFieldType.NUMBER))
                         )
                 ));
     }

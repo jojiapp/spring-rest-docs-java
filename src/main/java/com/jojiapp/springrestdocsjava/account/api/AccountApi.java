@@ -34,10 +34,16 @@ public class AccountApi {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAll(
+    public void updateAllById(
             @PathVariable Long id,
             @RequestBody AccountUpdate request) {
-        accountService.update(id, request);
+        accountService.updateAllById(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeById(@PathVariable Long id) {
+        accountService.removeById(id);
     }
 
 }
