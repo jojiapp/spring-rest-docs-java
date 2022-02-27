@@ -1,4 +1,4 @@
-package com.jojiapp.springrestdocsjava.api;
+package com.jojiapp.springrestdocsjava.account.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jojiapp.springrestdocsjava.account.api.AccountApi;
@@ -41,7 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AccountApi.class)
 @AutoConfigureRestDocs
 @Import(SpringRestDocsConfig.class)
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+
+
 class AccountApiTest {
 
     @Autowired
