@@ -453,6 +453,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#overview-http-verbs">HTTP 동사</a></li>
 <li><a href="#overview-http-status-codes">HTTP 상태 코드</a></li>
 <li><a href="#overview-hypermedia">하이퍼미디어</a></li>
+<li><a href="#_index">Index</a>
+<ul class="sectlevel2">
+<li><a href="#_get">Get</a>
+<ul class="sectlevel3">
+<li><a href="#_get_curl_request">Example request</a></li>
+<li><a href="#_get_http_request">HTTP request</a></li>
+<li><a href="#_get_http_response">Example response</a></li>
+<li><a href="#_get_httpie_request">HTTPie request</a></li>
+<li><a href="#_get_links">Links</a></li>
+<li><a href="#_get_request_body">Request body</a></li>
+<li><a href="#_get_response_body">Response body</a></li>
+<li><a href="#_get_response_fields">Response fields</a></li>
+<li><a href="#_get_response_headers">Response headers</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#_account_계정">Account [계정]</a>
 <ul class="sectlevel2">
 <li><a href="#_등록">등록</a>
@@ -494,6 +511,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_수정_request_fields">Request fields</a></li>
 <li><a href="#_수정_request_headers">Request headers</a></li>
 <li><a href="#_수정_response_body">Response body</a></li>
+</ul>
+</li>
+<li><a href="#_삭제">삭제</a>
+<ul class="sectlevel3">
+<li><a href="#_삭제_curl_request">Example request</a></li>
+<li><a href="#_삭제_http_request">HTTP request</a></li>
+<li><a href="#_삭제_http_response">Example response</a></li>
+<li><a href="#_삭제_httpie_request">HTTPie request</a></li>
+<li><a href="#_삭제_path_parameters">Path parameters</a></li>
+<li><a href="#_삭제_request_body">Request body</a></li>
+<li><a href="#_삭제_response_body">Response body</a></li>
 </ul>
 </li>
 </ul>
@@ -597,6 +625,176 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 응답은 <a href="http://stateless.co/hal_specification.html">Hypertext Application from resource to resource. Language (HAL)</a> 형식을 따른다.
 링크는 `_links`라는 키로 제공한다.
 본 API의 사용자(클라이언트)는 URI를 직접 생성하지 않아야 하며, 리소스에서 제공하는 링크를 사용해야 한다.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_index"><a class="link" href="#_index">Index</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_get"><a class="link" href="#_get">Get</a></h3>
+<div class="sect3">
+<h4 id="_get_curl_request"><a class="link" href="#_get_curl_request">Example request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/' -i -X GET</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_get_http_request"><a class="link" href="#_get_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET / HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_get_http_response"><a class="link" href="#_get_http_response">Example response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/hal+json
+Content-Length: 221
+
+{
+  "body" : {
+    "success" : true
+  },
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8080"
+    },
+    "profile" : {
+      "href" : "http://localhost:8080/docs/index.html#resources-index-get"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_get_httpie_request"><a class="link" href="#_get_httpie_request">HTTPie request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ http GET 'http://localhost:8080/'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_get_links"><a class="link" href="#_get_links">Links</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">링크</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">self</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 API 링크</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">profile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 API 문서 링크</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_get_request_body"><a class="link" href="#_get_request_body">Request body</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs"></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_get_response_body"><a class="link" href="#_get_response_body">Response body</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">{
+  "body" : {
+    "success" : true
+  },
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8080"
+    },
+    "profile" : {
+      "href" : "http://localhost:8080/docs/index.html#resources-index-get"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_get_response_fields"><a class="link" href="#_get_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">body.success</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_links.self.href</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 API 링크</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_links.profile.href</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 API 문서 링크</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_get_response_headers"><a class="link" href="#_get_response_headers">Response headers</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Content-Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">기대 응답 Body 타입</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -1147,13 +1345,89 @@ Host: localhost:8080
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_삭제"><a class="link" href="#_삭제">삭제</a></h3>
+<div class="sect3">
+<h4 id="_삭제_curl_request"><a class="link" href="#_삭제_curl_request">Example request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://localhost:8080/api/accounts/1' -i -X DELETE</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_삭제_http_request"><a class="link" href="#_삭제_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/accounts/1 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_삭제_http_response"><a class="link" href="#_삭제_http_response">Example response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 204 No Content</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_삭제_httpie_request"><a class="link" href="#_삭제_httpie_request">HTTPie request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ http DELETE 'http://localhost:8080/api/accounts/1'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_삭제_path_parameters"><a class="link" href="#_삭제_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">계정 고유 아이디</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_삭제_request_body"><a class="link" href="#_삭제_request_body">Request body</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs"></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_삭제_response_body"><a class="link" href="#_삭제_response_body">Response body</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs"></code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2022-02-27 04:43:29 +0900
+Last updated 2022-02-27 20:29:27 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

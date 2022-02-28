@@ -1,7 +1,6 @@
 package com.jojiapp.springrestdocsjava.account.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jojiapp.springrestdocsjava.account.api.AccountApi;
 import com.jojiapp.springrestdocsjava.account.dto.request.AccountRegister;
 import com.jojiapp.springrestdocsjava.account.dto.request.AccountUpdate;
 import com.jojiapp.springrestdocsjava.account.dto.response.AccountResponse;
@@ -24,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.List;
@@ -41,8 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AccountApi.class)
 @AutoConfigureRestDocs
 @Import(SpringRestDocsConfig.class)
-
-
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class AccountApiTest {
 
     @Autowired
@@ -67,7 +66,7 @@ class AccountApiTest {
         // given
         var api = "/api/accounts";
         var apiRequest = new AccountRegister("jojiapp", 26);
-        var apiResponse = ApiResponse.of(SuccessResponse.create());
+        var apiResponse = ApiResponse.of(SuccessResponse.success());
 
         // when
         var result = mockMvc.perform(post(api)
@@ -196,6 +195,4 @@ class AccountApiTest {
                         )
                 ));
     }
-
-
 }

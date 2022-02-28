@@ -4,5 +4,4 @@ public record AccountResponse(
         Long id,
         String name,
         Integer age
-) {
-}
+) {}

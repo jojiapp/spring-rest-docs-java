@@ -6,7 +6,7 @@ import lombok.Getter;
 public class SuccessResponse {
     private SuccessResponse() {}
 
-    public static SuccessResponse create() {
+    public static SuccessResponse success() {
         return new SuccessResponse();
     }
 

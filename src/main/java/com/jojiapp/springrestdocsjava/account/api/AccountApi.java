@@ -24,7 +24,7 @@ public class AccountApi {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<SuccessResponse> save(@RequestBody AccountRegister request) {
         accountService.register(request);
-        return ApiResponse.of(SuccessResponse.create());
+        return ApiResponse.of(SuccessResponse.success());
     }
 
     @GetMapping

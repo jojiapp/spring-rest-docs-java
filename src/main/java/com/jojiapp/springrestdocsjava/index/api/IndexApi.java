@@ -14,7 +14,7 @@ public class IndexApi {
 
     @GetMapping
     public EntityModel<ApiResponse<SuccessResponse>> index() {
-        var apiResponse = ApiResponse.of(SuccessResponse.create());
+        var apiResponse = ApiResponse.of(SuccessResponse.success());
         return EntityModel.of(apiResponse)
                 .add(linkTo(methodOn(IndexApi.class).index()).withSelfRel())
                 .add(linkTo(IndexApi.class).slash("docs/index.html#resources-index-get").withRel("profile"));

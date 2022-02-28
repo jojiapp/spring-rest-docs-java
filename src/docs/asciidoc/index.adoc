@@ -78,12 +78,16 @@ operation::index/get[]
 
 === 등록
 
-operation::account/register[snippets='request-fields']
+operation::accounts/register[]
 
 === 전체 조회
 
-operation::account/find-all[]
+operation::accounts/find-all[]
 
 === 수정
 
-operation::account/update-all[]
+operation::accounts/update-all[]
+
+=== 삭제
+
+operation::accounts/remove[]
