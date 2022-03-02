@@ -2,7 +2,6 @@ package com.jojiapp.springrestdocsjava.index.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jojiapp.springrestdocsjava.config.SpringRestDocsConfig;
-import com.jojiapp.springrestdocsjava.index.api.IndexApi;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
