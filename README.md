@@ -531,11 +531,11 @@ operation::index/get[snippets='curl-request,http-request,response-body,response-
 
 > `operation`의 단점은 제목을 직접 지정할 수 없다는 것입니다. 하지만, `templates`을 `Custom`하여 기본 설정 값을 변경할 수 있습니다.
 
-### Templates Custom 방법
+## Templates Custom 방법
 
 `optional`이나 `default`와 같은 값들은 기본적으로는 문서에 나타나지 않습니다. 해당 값들이 문서에 나타나게 하기 위해서는 필드값을 `Custom`해야 합니다.
 
-#### Custom 파일 생성
+### Custom 파일 생성
 
 `Custom` 하기 위한 파일은 꼭 `src/test/resources/org/springframework/restdocs/templates` 위치에 만들어야 합니다.
 
@@ -551,7 +551,7 @@ response-fields.snippet
 response.headers.snippet
 ```
 
-#### 필드 값
+### 필드 값
 
 ```asciidoc
 ==== Request Parameters
@@ -597,9 +597,117 @@ parameterWithName().description().attributes(typeAttr()).optional()
 - `{{#defaults}}{{defaults}}{{/defaults}}`: `types`와 동일
 - `{{^optional}}true{{/optional}}`: `^`는 반대라는 의미로, `optional`이 없으면 `true`값이 나오게 됩니다.
 
-### 문서 예시
+### 예시
 
-#### 기본 설정
+#### links.snippet
+
+```asciidoc
+|===
+|필드명|링크
+
+{{#links}}
+|{{#tableCellContent}}{{rel}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+{{/links}}
+
+|===
+```
+
+#### path-parameters.snippet
+
+```asciidoc
+|===
+|필드명|설명|타입
+
+{{#parameters}}
+|{{#tableCellContent}}{{name}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#types}}{{types}}{{/types}}{{/tableCellContent}}
+{{/parameters}}
+
+|===
+```
+
+#### request-fields.snippet
+
+```asciidoc
+|===
+|필드명|설명|타입|필수값
+
+{{#fields}}
+|{{#tableCellContent}}{{path}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+|{{#tableCellContent}}{{type}}{{/tableCellContent}}
+|{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}
+{{/fields}}
+
+|===
+```
+
+#### request-headers.snippet
+
+```asciidoc
+|===
+|헤더명|설명
+
+{{#headers}}
+|{{#tableCellContent}}{{name}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+{{/headers}}
+
+|===
+```
+
+#### request-parameters.snippet
+
+```asciidoc
+|===
+|필드명|설명|타입|기본값|필수값
+
+{{#parameters}}
+|{{#tableCellContent}}{{name}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#types}}{{types}}{{/types}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#defaults}}{{defaults}}{{/defaults}}{{/tableCellContent}}
+|{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}
+{{/parameters}}
+
+|===
+```
+
+#### response-fields.snippet
+
+```asciidoc
+|===
+|필드명|설명|타입|필수값
+
+{{#fields}}
+|{{#tableCellContent}}{{path}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+|{{#tableCellContent}}{{type}}{{/tableCellContent}}
+|{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}
+{{/fields}}
+
+|===
+```
+
+#### response-headers.snippet
+
+```asciidoc
+|===
+|헤더명|설명
+
+{{#headers}}
+|{{#tableCellContent}}{{name}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+{{/headers}}
+
+|===
+```
+
+## 문서 예시
+
+### 기본 설정
 
 ```asciidoc
 = REST API Guide
@@ -612,7 +720,7 @@ parameterWithName().description().attributes(typeAttr()).optional()
 :sectlinks:
 ```
 
-#### 개요
+### 개요
 
 ```asciidoc
 [[overview]]
@@ -654,16 +762,31 @@ parameterWithName().description().attributes(typeAttr()).optional()
 | 요청을 성공적으로 처리함
 
 | `201 Created`
-| 새 리소스를 성공적으로 생성함. 응답의 `Location` 헤더에 해당 리소스의 URI가 담겨있다.
+| 새 리소스를 성공적으로 생성함.
 
 | `204 No Content`
-| 기존 리소스를 성공적으로 수정함.
+| 기존 리소스를 성공적으로 수정 및 삭제함.
 
 | `400 Bad Request`
 | 잘못된 요청을 보낸 경우. 응답 본문에 더 오류에 대한 정보가 담겨있다.
 
+| `401 Unauthorized`
+| 인증되지 않은 사용자.
+
+| `403 Forbidden`
+| 권한이 없음.
+
 | `404 Not Found`
-| 요청한 리소스가 없음.
+| 요청한 리소스가 없음. 응답 본문에 더 오류에 대한 정보가 담겨있다.
+
+| `405 Method Not Allowed`
+| 지원하지 않는 메소드.
+
+| `409 Conflict`
+| 중복 예외. 응답 본문에 더 오류에 대한 정보가 담겨있다.
+
+| `500 Internal Server Error`
+| 서버 에러.
 |===
 
 [[overview-hypermedia]]
@@ -675,7 +798,7 @@ parameterWithName().description().attributes(typeAttr()).optional()
 본 API의 사용자(클라이언트)는 URI를 직접 생성하지 않아야 하며, 리소스에서 제공하는 링크를 사용해야 한다.
 ```
 
-#### 리소스
+### 리소스
 
 ```asciidoc
 [[resources]]
